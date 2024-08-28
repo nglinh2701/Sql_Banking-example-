@@ -14,11 +14,13 @@ txn_amount: số tiền giao dịch
 Câu hỏi:
 Với vai trò là một DA tại ngân hàng X, bạn hãy sử dụng bộ dữ liệu data_bank.customer_transactions để trả lời các câu hỏi sau:
 
-Số lượng giao dịch và tổng số tiền cho mỗi loại giao dịch là bao nhiêu?
-Số lượng giao dịch ký gửi và số tiền ký gửi trung bình cho tất cả khách hàng là bao nhiêu?
-Trong mỗi tháng, có bao nhiêu khách hàng của Ngân hàng thực hiện hơn 1 lần gửi tiền và 1 lần mua hàng hoặc 1 lần rút tiền trong một tháng?
-Số dư cuối kỳ của mỗi khách hàng vào cuối tháng là bao nhiêu?
-Tỷ lệ phần trăm khách hàng tăng số dư cuối kỳ của họ lên hơn 5% là bao nhiêu?
+1. Số lượng giao dịch và tổng số tiền cho mỗi loại giao dịch là bao nhiêu?
+2. Số lượng giao dịch ký gửi và số tiền ký gửi trung bình cho tất cả khách hàng là bao nhiêu?
+3. Trong mỗi tháng, có bao nhiêu khách hàng của Ngân hàng thực hiện hơn 1 lần gửi tiền và 1 lần mua hàng hoặc 1 lần rút tiền trong một tháng?
+4. Số dư cuối kỳ của mỗi khách hàng vào cuối tháng là bao nhiêu?
+5. Tỷ lệ phần trăm khách hàng tăng số dư cuối kỳ của họ lên hơn 5% là bao nhiêu?
+
+II. Giải quyết câu hỏi
 Select *
 From data_bank.customer_transactions; 
 
@@ -27,14 +29,14 @@ SelECT txn_type, COUNT(txn_amount) AS number_of_transactions, SUM(txn_amount) AS
 From data_bank.customer_transactions
 GROUP BY txn_type;
 
--- 2.Số lượng giao dịch ký gửi và số tiền ký gửi trung bình cho tất cả khách hàng
+-- Question 2.Số lượng giao dịch ký gửi và số tiền ký gửi trung bình cho tất cả khách hàng
 
 SELECT txn_type, COUNT(txn_type) AS number_of_deposit, AVG(txn_amount) AS average_deposit_amount
 FROM data_bank.customer_transactions
 where txn_type = 'deposit'
 GROUP by txn_type;
 
---3. Trong mỗi tháng, có bao nhiêu khách hàng của Ngân hàng thực hiện hơn 1 lần gửi tiền và 1 lần mua hàng hoặc 1 lần rút tiền trong một tháng
+-- Question 3. Trong mỗi tháng, có bao nhiêu khách hàng của Ngân hàng thực hiện hơn 1 lần gửi tiền và 1 lần mua hàng hoặc 1 lần rút tiền trong một tháng
 WITH transaction AS (
     SELECT
         customer_id,
@@ -54,7 +56,7 @@ WHERE
 GROUP BY month
 ORDER BY month;
 
--- 4. Số dư cuối kỳ của mỗi khách hàng vào cuối tháng là bao nhiêu
+-- Question 4. Số dư cuối kỳ của mỗi khách hàng vào cuối tháng là bao nhiêu
 
 WITH end_of_month_data AS(
         SELECT 
@@ -91,7 +93,8 @@ SELECT
         deposit_amount - purchase_amount - withdrawal_amount AS balance
 FROM monthly_transaction
 ORDER BY customer_id, end_of_month
--- 5. Tỷ lệ phần trăm khách hàng tăng số dư cuối kỳ của họ lên hơn 5% là bao nhiêu?
+
+-- Question 5. Tỷ lệ phần trăm khách hàng tăng số dư cuối kỳ của họ lên hơn 5% là bao nhiêu?
 
 -- Tính total amount tại thời điểm cuối tháng theo từng Customer và từng loại txn_type
 
